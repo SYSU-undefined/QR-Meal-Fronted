@@ -1,6 +1,10 @@
-import Vue from 'vue'
-import App from './App'
-import './assets/style/weui.css'
+import Vue from 'vue';
+import App from './App';
+import './assets/style/weui.css';
+
+import './assets/style/font-awesome.css';
+
+
 Vue.config.productionTip = false
 App.mpType = 'app'
 
