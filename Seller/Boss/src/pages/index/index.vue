@@ -39,8 +39,15 @@
           <div class="food-item"  v-for="f in selectedFoods" :key="f.description">
             <img class="food-img" alt="食物图片" src="https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1529453433&di=70ad1c754dcc750f4fcfba2edcf61ff3&imgtype=jpg&er=1&src=http%3A%2F%2Fimg.juimg.com%2Ftuku%2Fyulantu%2F121020%2F240425-12102020030650.jpg"
             />
-            <h5 class="food-price">{{f.price}}</h5>
-            <p class="food-des">{{f.description}}</p>
+            <div class="food-detail">
+              <input v-model.lazy="f.name" placeholder="输入食物名字">
+              <label>￥</label><input v-model.lazy="f.price" placeholder="输入食物价格">
+            </div>
+
+
+            <p class="food-des">
+              <textarea v-model.lazy="f.description" placeholder="输入食物描述"></textarea>
+            </p>
           </div>
         </div>
       </div>
@@ -72,23 +79,27 @@
         foods: {
           '麻辣': [
             {
+              name: '螺狮粉',
               price: 666,
               description: '麻辣香锅 --- 你没有吃过的船新版本',
               image: "https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1529453433&di=70ad1c754dcc750f4fcfba2edcf61ff3&imgtype=jpg&er=1&src=http%3A%2F%2Fimg.juimg.com%2Ftuku%2Fyulantu%2F121020%2F240425-12102020030650.jpg"
             },
             {
+              name: '螺狮粉',
               price: 666,
               description: '麻辣香锅 --- 你没有吃过的船新版本o',
               image: "https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1529453433&di=70ad1c754dcc750f4fcfba2edcf61ff3&imgtype=jpg&er=1&src=http%3A%2F%2Fimg.juimg.com%2Ftuku%2Fyulantu%2F121020%2F240425-12102020030650.jpg"
             },
             {
+              name: '螺狮粉',
               price: 666,
               description: '麻辣香锅 --- 你没有吃过的船新版本a',
               image: "https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1529453433&di=70ad1c754dcc750f4fcfba2edcf61ff3&imgtype=jpg&er=1&src=http%3A%2F%2Fimg.juimg.com%2Ftuku%2Fyulantu%2F121020%2F240425-12102020030650.jpg"
             },
           ]
         },
-        selectedFoods : []
+        selectedFoods : [],
+        selectedType : null
       }
     },
 
@@ -103,6 +114,7 @@
         for (var i = 0; i < this.types.length; i++) {
           if (i == index) {
             this.types[i].isActive = true;
+            this.selectedType = this.types[i].name;
             this.selectedFoods = this.foods[this.types[i].name];
           }
           else this.types[i].isActive = false;
@@ -114,6 +126,14 @@
           isActive: false,
           edit: false
         });
+      },
+      addNewFood() {
+        this.foods[this.selectedType].push({
+          name: '',
+          price: 0,
+          description: '',
+          image: '',
+        })
       },
       requestFood(typename) {
 
@@ -147,12 +167,19 @@
     margin-top: 10px;
   }
 
-  .food-price {
+  .food-detail {
+    padding-top: 10px;
+  }
+  .food-detail h5 {
+    display: inline-block;
+    margin-right: 50px;
+  }
+  .food-des {
     padding-top: 10px;
   }
 
-  .food-des {
-    padding-top: 10px;
+  .food-des textarea {
+    width: 100%;
   }
 
   .food-img {
@@ -189,11 +216,12 @@
     display: flex;
     flex-wrap: wrap;
 
-    justify-content: space-between;
+    justify-content: space-around;
   }
   .food-item {
     flex-grow: 0;
     width: 30%;
+    padding: 10px;
     margin: 0;
     height: 30vh;
     border-width: .2rem;
@@ -230,6 +258,8 @@
     flex-wrap: wrap;
 
     justify-content: space-between;
+
+    overflow-y:scroll;
   }
 
 </style>
