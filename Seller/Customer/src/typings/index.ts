@@ -7,5 +7,12 @@ declare module wx {
     statusCode: number;
   }
 
-  var $reqeust: Request
+  var $reqeust: Request;
+  var $method: {
+    GET: string;
+    POST: string;
+    PUT: string;
+    DELETE: string;
+    PATCH: string;
+  };
 }

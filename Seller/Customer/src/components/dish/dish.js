@@ -6,11 +6,11 @@ export default {
   },
   methods: {
     add_dish() {
-      this.dish.count++;
+      this.dish.count += 1;
       this.$emit('add');
     },
     remove_dish() {
-      this.dish.count--;
+      this.dish.count -= 1;
       this.$emit('remove');
     },
   },

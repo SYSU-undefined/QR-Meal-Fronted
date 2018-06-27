@@ -123,6 +123,7 @@ export class Request {
   static injectRequest() {
     if (wx.$reqeust) return;
     wx.$reqeust = new Request();
+    wx.$method = Method;
   }
 }
 
