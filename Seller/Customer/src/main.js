@@ -4,7 +4,7 @@ import 'weui-wxss/dist/style/weui.wxss';
 
 import App from './App';
 
-import './assets/style/font-awesome.css';
+import '../static/style/font-awesome.css';
 
 Vue.config.productionTip = false;
 App.mpType = 'app';

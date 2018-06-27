@@ -1,4 +1,4 @@
-import { Cookie } from './cookie';
+import Cookie from './cookie';
 
 export const COOKIE_STORAGE_KEY = 'qr-meal-cookies';
 class CookieManager {
@@ -14,14 +14,18 @@ class CookieManager {
 
     /** @type {Object.<string, Cookie>} */
     const cookiesFromStorage = wx.getStorageSync(COOKIE_STORAGE_KEY) || {};
-    Object.values(cookiesFromStorage).forEach(cookie => cookies[cookie.key] = Cookie.fromObject(cookie));
+    Object.values(cookiesFromStorage).forEach((cookie) => {
+      cookies[cookie.key] = Cookie.fromObject(cookie);
+    });
     return cookies;
   }
 
   pruneCookies() {
     const validCookies = Object.values(this._cookies).filter(cookie => cookie.expires > Date.now());
     this._cookies = {};
-    validCookies.forEach(cookie => this._cookies[cookie.key] = cookie);
+    validCookies.forEach((cookie) => {
+      this._cookies[cookie.key] = cookie;
+    });
   }
 
   sync() {
@@ -34,7 +38,9 @@ class CookieManager {
 
   addCookies(header) {
     const cookies = Cookie.fromHeader(header);
-    cookies.forEach(cookie => this._cookies[cookie.key] = cookie);
+    cookies.forEach((cookie) => {
+      this._cookies[cookie.key] = cookie;
+    });
     if (cookies.length > 0) {
       this.sync();
     }
@@ -62,29 +68,32 @@ export class Request {
   }
 
   /**
-   * 
    * @param {string} url
    * @param {string} method
    * @param {object} data
    * @param {object} header
    * @param {string} dataType
-   * 
+   *
    * @return {Promise<wx.DataResponse>}
    */
   async _request(url, method, data, header = {}, dataType = 'json') {
     const cookieManager = this._cookieManager;
-    const cookie = cookieManager.cookie;
-    if (!header) {
-      header = {};
-    }
+    const { cookie } = cookieManager.cookie;
     Object.assign(header, { cookie });
     return Promise((resolve, reject) => {
       /**
        * @type {wx.RequestOptions}
        */
-      const wxRequestParam = { url, method, data, dataType, header, fail: reject };
+      const wxRequestParam = {
+        url,
+        method,
+        data,
+        dataType,
+        header,
+        fail: reject,
+      };
       /**
-       * @param {wx.DataResponse} res 
+       * @param {wx.DataResponse} res
        */
       wxRequestParam.success = function hijackResponse(res) {
         const cookies = res.header && res.header[COOKIE_HEADER];
@@ -92,7 +101,7 @@ export class Request {
           cookieManager.addCookies(cookies);
         }
         resolve(res);
-      }
+      };
       wx.request(wxRequestParam);
     });
   }
@@ -100,12 +109,12 @@ export class Request {
   /**
    * @param {string} url
    * @param {object} query
-   * 
+   *
    * @returns {Promise<wx.DataResponse>}
    */
   async get(url, query) {
     const response = await this._request(url, Method.GET, query);
-    if (response.statusCode == 401) {
+    if (response.statusCode === 401) {
       // handel login
     }
     return response;

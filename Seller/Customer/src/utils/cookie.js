@@ -1,6 +1,7 @@
-export class Cookie {
+import _ from 'lodash';
+
+export default class Cookie {
   /**
-   * 
    * @param {string} key 键
    * @param {string} value 值
    * @param {number} expires 时间
@@ -15,36 +16,42 @@ export class Cookie {
     return new Cookie(cookie.key, cookie.value, cookie.expires);
   }
 
+  static _catchExpires(attribute) {
+    const [expires] = attribute.match(/expires=(.*);?/i) || [];
+    if (expires) {
+      return (new Date(expires)).getTime();
+    }
+    const [maxAge] = attribute.match(/max-age=(.*);?/i) || [];
+    if (maxAge) {
+      const maxAgeInt = parseInt(maxAge, 10);
+      return Date.now() + (Number.isNaN(maxAgeInt) ? 0 : 1000 * maxAgeInt);
+    }
+    return false;
+  }
+
   /**
-   * 
    * @param {string} cookie
-   * 
+   *
    * @param {Cookie}
    */
   static fromString(cookie) {
     const [cookieKeyValue, ...attributes] = cookie.split(/; */);
     const [key, value] = cookieKeyValue.split('=');
     let expires = null;
-    for (const attribute of attributes) {
-      const [maxAge] = attribute.match(/max-age=(.*);?/i) || [];
-      if (maxAge) {
-        const maxAgeInt = parseInt(maxAge);
-        expires = Date.now() + (isNaN(maxAgeInt) ? 0 : 1000 * maxAgeInt);
-        break;
+    _.forEach(attributes, (attribute) => {
+      const ex = Cookie._catchExpires(attribute);
+      if (ex !== false) {
+        expires = ex;
+        return false;
       }
-      [expires] = attribute.match(/expires=(.*);?/i) || [];
-      if (expires) {
-        expires = (new Date(expires)).getTime();
-        break;
-      }
-    }
+      return true;
+    });
     return new Cookie(key, value, expires);
   }
 
   /**
-   * 
    * @param {string} cookies
-   * 
+   *
    * @return {Cookie[]}
    */
   static fromHeader(cookies) {
