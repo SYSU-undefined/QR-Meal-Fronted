@@ -1,7 +1,9 @@
 import Vue from 'vue';
+
+import 'weui-wxss/dist/style/weui.wxss';
+
 import App from './App';
 
-import './assets/style/weui.css';
 import './assets/style/font-awesome.css';
 
 Vue.config.productionTip = false;
