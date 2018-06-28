@@ -1,4 +1,4 @@
-declare module wx {
+declare namespace wx {
   interface DataResponse {
     data: string | ArrayBuffer | object;
     header: {
@@ -6,7 +6,7 @@ declare module wx {
     };
     statusCode: number;
   }
-
+  
   var $reqeust: Request;
   var $method: {
     GET: string;
