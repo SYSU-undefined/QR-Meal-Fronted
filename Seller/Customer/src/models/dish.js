@@ -6,6 +6,10 @@ export class Dish {
     this.price = price;
     this.count = count;
   }
+
+  totalPrice() {
+    return this.price * this.count;
+  }
 }
 
 export default Dish;
