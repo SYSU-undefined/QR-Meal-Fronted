@@ -80,7 +80,7 @@ export class Request {
     const cookieManager = this._cookieManager;
     const { cookie } = cookieManager.cookie;
     Object.assign(header, { cookie });
-    return Promise((resolve, reject) => {
+    return new Promise((resolve, reject) => {
       /**
        * @type {wx.RequestOptions}
        */
