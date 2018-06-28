@@ -1,20 +1,6 @@
 <template>
   <div class="outter-container">
-    <b-navbar toggleable="md" type="dark" variant="dark">
-
-      <b-navbar-toggle target="nav_collapse"></b-navbar-toggle>
-
-      <b-navbar-brand href="#">餐厅管理系统</b-navbar-brand>
-
-      <b-collapse is-nav id="nav_collapse">
-        <b-navbar-nav>
-          <b-nav-item href="#">餐品管理</b-nav-item>
-          <b-nav-item href="#">餐桌管理</b-nav-item>
-          <b-nav-item href="#">人员管理</b-nav-item>
-            <b-nav-item href="#">订单管理</b-nav-item>
-        </b-navbar-nav>
-      </b-collapse>
-    </b-navbar>
+    <navb></navb>
     <b-container>
       <b-table striped hover :items="items" :fields="fields" :current-page="currentPage" :per-page="perPage">
         <template slot="actions" slot-scope="row">
@@ -90,6 +76,7 @@
 
 
 <script>
+  import navb from '../../components/navbar.vue';
   export default {
     data() {
       return {
@@ -131,6 +118,9 @@
             index: null
         }
       }
+    },
+        components: {
+      navb,
     },
     methods: {
       deleteStaff(index) {

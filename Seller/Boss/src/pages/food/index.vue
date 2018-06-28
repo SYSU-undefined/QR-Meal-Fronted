@@ -1,19 +1,6 @@
 <template>
   <div class="outter-container">
-    <b-navbar toggleable="md" type="dark" variant="dark">
-
-      <b-navbar-toggle target="nav_collapse"></b-navbar-toggle>
-
-      <b-navbar-brand href="#">餐厅管理系统</b-navbar-brand>
-
-      <b-collapse is-nav id="nav_collapse">
-        <b-navbar-nav>
-          <b-nav-item href="#">餐品管理</b-nav-item>
-          <b-nav-item href="#">餐桌管理</b-nav-item>
-          <b-nav-item href="#">人员管理</b-nav-item>
-        </b-navbar-nav>
-      </b-collapse>
-    </b-navbar>
+    <navb></navb>
     <div class="inner-container">
       <div class="sidebar">
         <ul class="sidebar-list">
@@ -36,27 +23,33 @@
       </div>
       <div class="main-content">
         <div class="food-item-group">
-          <div class="food-item"  v-for="f in selectedFoods" :key="f.description">
-            <img class="food-img" alt="食物图片" src="https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1529453433&di=70ad1c754dcc750f4fcfba2edcf61ff3&imgtype=jpg&er=1&src=http%3A%2F%2Fimg.juimg.com%2Ftuku%2Fyulantu%2F121020%2F240425-12102020030650.jpg"
+          <div class="food-item"  v-for="(f,ind) in selectedFoods" :key="f.description">
+            <span class="food-del" @click="delFood(ind)">X</span>
+            <b-button @click="uploadImg(f)" v-if="!f.image">上传食物图片</b-button>
+            <img @click="uploadImg(f)"  v-if="f.image" class="food-img" alt="食物图片"
             />
             <div class="food-detail">
-              <input v-model.lazy="f.name" placeholder="输入食物名字">
-              <label>￥</label><input v-model.lazy="f.price" placeholder="输入食物价格">
+              <b-form-input v-model.lazy="f.name" placeholder="输入食物名字"/>
+              <b-input-group size="sm" prepend="￥">
+                <b-form-input v-model.lazy="f.price" placeholder="输入食物价格"></b-form-input>
+               </b-input-group>
             </div>
-
-
             <p class="food-des">
-              <textarea v-model.lazy="f.description" placeholder="输入食物描述"></textarea>
+              <b-form-textarea v-model.lazy="f.description" placeholder="输入食物描述"></b-form-textarea>
             </p>
           </div>
         </div>
       </div>
     </div>
+    <b-modal id='upload' @ok="setImg()">
+       <b-form-file v-model="selectedFood.image" :state="Boolean(selectedFood.image)" placeholder="选择食物图片"></b-form-file>
+    </b-modal>
   </div>
 </template>
 
 <script>
-  import draggable from 'vuedraggable'
+  import draggable from 'vuedraggable';
+  import navb from '../../components/navbar.vue';
   export default {
     data() {
       return {
@@ -82,24 +75,25 @@
               name: '螺狮粉',
               price: 666,
               description: '麻辣香锅 --- 你没有吃过的船新版本',
-              image: "https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1529453433&di=70ad1c754dcc750f4fcfba2edcf61ff3&imgtype=jpg&er=1&src=http%3A%2F%2Fimg.juimg.com%2Ftuku%2Fyulantu%2F121020%2F240425-12102020030650.jpg"
+              image: null
             },
             {
               name: '螺狮粉',
               price: 666,
               description: '麻辣香锅 --- 你没有吃过的船新版本o',
-              image: "https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1529453433&di=70ad1c754dcc750f4fcfba2edcf61ff3&imgtype=jpg&er=1&src=http%3A%2F%2Fimg.juimg.com%2Ftuku%2Fyulantu%2F121020%2F240425-12102020030650.jpg"
+              image: null
             },
             {
               name: '螺狮粉',
               price: 666,
               description: '麻辣香锅 --- 你没有吃过的船新版本a',
-              image: "https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1529453433&di=70ad1c754dcc750f4fcfba2edcf61ff3&imgtype=jpg&er=1&src=http%3A%2F%2Fimg.juimg.com%2Ftuku%2Fyulantu%2F121020%2F240425-12102020030650.jpg"
+              image: null
             },
           ]
         },
         selectedFoods : [],
-        selectedType : null
+        selectedType : null,
+        selectedFood: {}
       }
     },
 
@@ -107,7 +101,7 @@
       this.activeItem(0);
     },
     components: {
-      draggable,
+      draggable,navb
     },
     methods: {
       activeItem(index) {
@@ -132,7 +126,7 @@
           name: '',
           price: 0,
           description: '',
-          image: '',
+          image: null,
         })
       },
       requestFood(typename) {
@@ -140,6 +134,15 @@
       },
       uploadChange() {
 
+      },
+      uploadImg(f) {
+        this.selectedFood = f;
+        this.$root.$emit('bv::show::modal','upload');
+      },
+      setImg() {
+        console.log(this.selectedFood);
+        let fr = new FileReader();
+        let url = fr.readAsDataURL(this.selectedFood.image);
       }
     }
   }
@@ -148,6 +151,15 @@
 
 
 <style scoped>
+  .food-del {
+    color:red;
+    font-size: 20px;
+    position: absolute;
+    top:0;
+    right: 0;
+    vertical-align: text-top;
+    cursor: pointer;
+  }
   .active-item-input {
     background-color: rgb(38, 52, 69) !important;
     color: rgb(64, 158, 255) !important;
@@ -185,6 +197,7 @@
   .food-img {
     height: 50%;
     width: 100%;
+    cursor: pointer;
   }
 
   .sidebar-list {
@@ -221,11 +234,14 @@
   .food-item {
     flex-grow: 0;
     width: 30%;
-    padding: 10px;
+    padding-top: 20px;
+    padding-left: 10px;
+    padding-right: 10px;
     margin: 0;
-    height: 30vh;
+    max-height: 50vh;
     border-width: .2rem;
     border: solid #f7f7f9;
+    position: relative;
   }
 
 

@@ -1,20 +1,6 @@
 <template>
   <div class="outter-container">
-    <b-navbar toggleable="md" type="dark" variant="dark">
-
-      <b-navbar-toggle target="nav_collapse"></b-navbar-toggle>
-
-      <b-navbar-brand href="#">餐厅管理系统</b-navbar-brand>
-
-      <b-collapse is-nav id="nav_collapse">
-        <b-navbar-nav>
-          <b-nav-item href="#">餐品管理</b-nav-item>
-          <b-nav-item href="#">餐桌管理</b-nav-item>
-          <b-nav-item href="#">人员管理</b-nav-item>
-          <b-nav-item href="#">订单管理</b-nav-item>
-        </b-navbar-nav>
-      </b-collapse>
-    </b-navbar>
+    <navb></navb>
     <b-container>
       <b-table striped hover :items="items" :fields="fields" :current-page="currentPage" :per-page="perPage">
         <template slot="actions" slot-scope="row">
@@ -25,11 +11,11 @@
 
         </template>
       </b-table>
-      <b-row  align-h="end">
-      <b-col cols="4">
-        <b-pagination :total-rows="totalRows" :per-page="perPage" v-model="currentPage" class="my-0" />
-      </b-col>
-    </b-row>
+      <b-row align-h="end">
+        <b-col cols="4">
+          <b-pagination :total-rows="totalRows" :per-page="perPage" v-model="currentPage" class="my-0" />
+        </b-col>
+      </b-row>
 
 
 
@@ -55,32 +41,53 @@
 
 
 <script>
+  import navb from '../../components/navbar.vue';
+  Date.prototype.Format = function (format) {
+    var o = {
+      "M+": this.getMonth() + 1, //month 
+      "d+": this.getDate(), //day 
+      "h+": this.getHours(), //hour 
+      "m+": this.getMinutes(), //minute 
+      "s+": this.getSeconds(), //second 
+      "q+": Math.floor((this.getMonth() + 3) / 3), //quarter 
+      "S": this.getMilliseconds() //millisecond 
+    }
+    if (/(y+)/.test(format)) {
+      format = format.replace(RegExp.$1, (this.getFullYear() + "").substr(4 - RegExp.$1.length));
+    }
+    for (var k in o) {
+      if (new RegExp("(" + k + ")").test(format)) {
+        format = format.replace(RegExp.$1, RegExp.$1.length == 1 ? o[k] : ("00" + o[k]).substr(("" + o[k]).length));
+      }
+    }
+    return format;
+  }
   const items = [{
       total: 100,
       table: 4,
-      date: new Date().toString()
+      date: new Date().Format("yyyy-MM-dd hh:mm:ss")
     },
     {
       total: 500,
       table: 4,
-      date: new Date().toString()
+      date: new Date().Format("yyyy-MM-dd hh:mm:ss")
     },
     {
       total: 101,
       table: 4,
-      date: new Date().toString()
+      date: new Date().Format("yyyy-MM-dd hh:mm:ss")
     },
     {
       total: 102,
       table: 4,
-      date: new Date().toString()
+      date: new Date().Format("yyyy-MM-dd hh:mm:ss")
     },
   ]
 
   export default {
     data() {
       return {
-        items: items,
+        items: null,
         fields: [{
             key: 'total',
             label: '总价',
@@ -102,12 +109,19 @@
         ],
         currentPage: 1,
         perPage: 8,
-        totalRows: items.length,
-        detailItem : null
+        totalRows: null,
+        detailItem: null
       }
     },
+    created() {
+      this.items = items;
+      this.totalRows = items.length;
+    },
+    components: {
+      navb,
+    },
     methods: {
-      
+
     }
   }
 
