@@ -1,41 +1,124 @@
 <template>
-  <div class="container" @click="clickHandle('test click', $event)">
-    <form class="form-container">
-      <input type="text" class="form-control" v-model="motto" placeholder="v-model" />
-      <input type="text" class="form-control" v-model.lazy="motto" placeholder="v-model.lazy" />
-    </form>
+  <div class="root">
+    <div class="user-info">
+      <image class="avatar" :src="userInfo.avatarUrl"/>
+      <div class="name">{{userInfo.nickName}}</div>
+    </div>
+    <div class="function-area">
+      <div class="button-wrap">
+        <div class="icon-wrap qrcode">
+          <i class="fa fa-qrcode"/>
+        </div>
+        <div>扫码点餐</div>
+      </div>
+      <div class="button-wrap">
+        <div class="icon-wrap order-status">
+          <i class="fa fa-utensils"/>
+        </div>
+        <div>上菜进度</div>
+      </div>
+      <div class="button-wrap">
+        <div class="icon-wrap order">
+          <i class="fa fa-history"/>
+        </div>
+        <div>历史订单</div>
+      </div>
+    </div>
   </div>
 </template>
+
+<style scoped>
+.root,
+.user-info,
+.function-area {
+  width: 100%;
+}
+
+.avatar {
+  height: 150rpx;
+  width: 150rpx;
+  border-radius: 50%;
+}
+
+.name {
+  display: inline-block;
+  margin-left: 34px;
+}
+
+.user-info {
+  display: flex;
+  align-items: center;
+  box-sizing: border-box;
+  padding: 30rpx 80rpx;
+}
+
+.function-area {
+  display: flex;
+  justify-content: space-around;
+}
+
+.button-wrap {
+  display: inline-block;
+}
+
+.button-wrap > div {
+  text-align: center;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+i {
+  font-size: 2em;
+  color: white;
+}
+
+.icon-wrap {
+  border-radius: 50%;
+  height: 3em;
+  width: 3em;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.icon-wrap.qrcode {
+  background: #0076FF;
+}
+
+.icon-wrap.order-status {
+  background: #F7D002;
+}
+
+.icon-wrap.order {
+  background: #FF4081;
+}
+
+</style>
+
 
 <script>
 export default {
   data() {
     return {
-      motto: 'Hello World',
       userInfo: {},
     };
   },
 
   methods: {
-    bindViewTap() {
-      const url = '../logs/main';
-      wx.navigateTo({ url });
+    async getUserInfo() {
+      const { code } = await wx.loginAsync();
+      // TODO: login here
+      console.log(code);
+      ({ userInfo: this.userInfo } = await wx.getUserInfoAsync());
     },
-    getUserInfo() {
-      // 调用登录接口
-      wx.login({
-        success: () => {
-          wx.getUserInfo({
-            success: (res) => {
-              this.userInfo = res.userInfo;
-              // this.dish.image = this.userInfo.avatarUrl;
-            },
-          });
-        },
-      });
+    async scanCode() {
+      wx.scanCode();
     },
-    clickHandle(msg, ev) {
-      console.log('clickHandle:', msg, ev);
+    toOrders() {
+      wx.navigateTo({ url: '/pages/orders/main' });
+    },
+    toOrderStatus() {
+      wx.navigateTo({ url: '/pages/order/main' });
     },
   },
 
@@ -46,41 +129,3 @@ export default {
 };
 
 </script>
-
-<style scoped>
-.userinfo {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
-.userinfo-avatar {
-  width: 128rpx;
-  height: 128rpx;
-  margin: 20rpx;
-  border-radius: 50%;
-}
-
-.userinfo-nickname {
-  color: #aaa;
-}
-
-.usermotto {
-  margin-top: 150px;
-}
-
-.form-control {
-  display: block;
-  padding: 0 12px;
-  margin-bottom: 5px;
-  border: 1px solid #ccc;
-}
-
-.counter {
-  display: inline-block;
-  margin: 10px auto;
-  padding: 5px 10px;
-  color: blue;
-  border: 1px solid blue;
-}
-</style>
