@@ -115,6 +115,10 @@ export default {
   },
   methods: {
   },
+  async onPullDownRefresh() {
+    console.log("下拉刷新")
+    wx.stopPullDownRefresh();
+  },
 }
 </script>
 

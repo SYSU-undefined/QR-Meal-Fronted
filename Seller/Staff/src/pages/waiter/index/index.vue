@@ -15,14 +15,14 @@
     </ul>
   </div>
     <div class="tabbar">
-      <a href="../index/main" class="tabbar-item">
+      <div class="tabbar-item" style="color:black">
         <i class="fa fa-wrench"></i>
         <span class="tabbar-item-title">餐桌列表</span>
-      </a>
-      <a href="../call/main" class="tabbar-item">
+      </div>
+      <div @click="switchTo('/pages/waiter/call/main')" class="tabbar-item">
         <i class="fa fa-check-square"></i>
         <span class="tabbar-item-title">叫号</span>
-      </a>
+      </div>
     </div>
   </div>
 </template>
@@ -106,19 +106,19 @@ export default {
           payState: 0
         },
         {
-          table: '23',
+          table: '24',
           capacity: 4,
           state: 0,
           payState: 0
         },
         {
-          table: '23',
+          table: '25',
           capacity: 4,
           state: 1,
           payState: 0
         },
         {
-          table: '23',
+          table: '26',
           capacity: 4,
           state: 0,
           payState: 0
@@ -126,8 +126,8 @@ export default {
       ]
     }
   },
-  created () {
-
+  mounted() {
+    
   },
   methods: {
     changeTableState(f) {
@@ -140,7 +140,14 @@ export default {
     },
     freeTable(f) {
         f.state = 0;
-    }
+    },
+    switchTo(url) {
+      wx.reLaunch({url});
+    },
+  },
+  async onPullDownRefresh() {
+    console.log("下拉刷新")
+    wx.stopPullDownRefresh();
   },
 }
 </script>

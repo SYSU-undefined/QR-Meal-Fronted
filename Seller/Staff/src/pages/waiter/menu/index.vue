@@ -93,7 +93,7 @@ export default {
       foodList: [
         {
           name: '麻婆豆腐',
-          table: '23',
+          table: '25',
           note: '加辣加麻',
           state: 0
         },
@@ -108,6 +108,10 @@ export default {
       if (f.state < 1)
         f.state += 1;
     },
+  },
+  async onPullDownRefresh() {
+    console.log("下拉刷新")
+    wx.stopPullDownRefresh();
   },
 }
 </script>

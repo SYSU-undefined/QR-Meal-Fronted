@@ -6,20 +6,21 @@
         <div class="table-item" v-for="(f,i) in waitList" :key="i">
           <h5 class="table-item-num">第{{f.number}}号</h5>
           <p class="table-item-cap">人数: {{f.capacity}}</p>
-          <button class="table-item-btn">安排就餐</button>
+          <button class="table-item-btn" @click="setDown(i)">安排就餐</button>
         </div>
       </li>
     </ul>
+    <div v-if="waitList.length == 0">无人等待</div>
   </div>
     <div class="tabbar">
-      <a href="../index/main" class="tabbar-item">
+      <div  @click="switchTo('/pages/waiter/index/main')" class="tabbar-item">
         <i class="fa fa-wrench"></i>
         <span class="tabbar-item-title">餐桌列表</span>
-      </a>
-      <a href="../finish/main" class="tabbar-item">
+      </div>
+      <div class="tabbar-item" style="color:black">
         <i class="fa fa-check-square"></i>
         <span class="tabbar-item-title">叫号</span>
-      </a>
+      </div>
     </div>
   </div>
 </template>
@@ -111,6 +112,16 @@ export default {
       if (f.state < 1)
         f.state += 1;
     },
+    switchTo(url) {
+      wx.reLaunch({url});
+    },
+    setDown(ind) {
+      this.waitList.splice(ind,1);
+    }
+  },
+  async onPullDownRefresh() {
+    console.log("下拉刷新")
+    wx.stopPullDownRefresh();
   },
 }
 </script>
