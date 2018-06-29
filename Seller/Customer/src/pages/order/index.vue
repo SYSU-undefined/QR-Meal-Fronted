@@ -35,6 +35,7 @@ span.bold {
   line-height: 60rpx;
   font-size: 0.85em;
   text-align: center;
+  background: #f0f0f0;
 }
 
 .order {
