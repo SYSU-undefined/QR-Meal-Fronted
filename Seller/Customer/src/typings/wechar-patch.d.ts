@@ -7,6 +7,8 @@ declare namespace wx {
     statusCode: number;
   }
   
+  var $rpxRatio: number;
+  var $pxRatio: number;
   var $reqeust: Req;
   var $method: {
     GET: string;

@@ -13,6 +13,8 @@ const option = {
       tags: [],
       showChart: false,
       dishes: [],
+      taged_dishes: [],
+      selectedTagIndex: null,
     };
   },
 
@@ -36,11 +38,33 @@ const option = {
       if (statusCode !== 200) return;
       this.dishes = dishes;
     },
-    add_dish(index) {
-      this.dishes[index].count += 1;
+    add_dish(tagIndex, index) {
+      this.taged_dishes[tagIndex][index].count += 1;
     },
-    remove_dish(index) {
-      this.dishes[index].count += 1;
+    remove_dish(tagIndex, index) {
+      this.taged_dishes[tagIndex][index].count += 1;
+    },
+    menu_scroll(event) {
+      const { target } = event;
+      const { scrollTop } = target;
+      const topTag = this.offset_to_tag(scrollTop);
+      if (this.selectedTagIndex !== topTag) {
+        this.selectedTagIndex = topTag;
+      }
+    },
+    offset_to_tag(offset) {
+      let rest = offset;
+      for (const [tagIndex, dishes] of Object.entries(this.taged_dishes)) {
+        const length = this.tagHeight + (this.dishHeight * dishes.length);
+        if (rest <= length) {
+          return tagIndex;
+        }
+        rest -= length;
+      }
+      return this.tags.length - 1;
+    },
+    tag_click(index) {
+      this.selectedTagIndex = index;
     },
   },
   computed: {
@@ -50,14 +74,32 @@ const option = {
         .map(one => one.count * one.price)
         .reduce((lhs, rhs) => lhs + rhs, 0);
     },
+    selectedTag() {
+      return this.tags[this.selectedTagIndex];
+    },
+    selectedTagIndexWrap() {
+      return `tag-${this.selectedTagIndex}`;
+    },
+  },
+  watch: {
+    dishes(dishes) {
+      this.taged_dishes = this.tags.map(tag => dishes.filter(one => one.tag === tag));
+    },
+    tags() {
+      this.selectedTagIndex = 0;
+    },
   },
   created() {
+    this.dishHeight = parseFloat((175 * wx.$rpxRatio).toFixed(2));
+    this.tagHeight = parseFloat((50 * wx.$rpxRatio).toFixed(2));
+  },
+  onLoad() {
     Object.assign(this, _.pick(this.$root.$mp.query, ['restaurant_id', 'table_id']));
     this.tags = ['0', '1', '2', '3'];
     for (let i = 0; i < 40; i += 1) {
       const dishId = i;
       const name = `Dish ${i}`;
-      const tag = this.tags[Math.floor(i / 10)];
+      const tag = `${this.tags[Math.floor(i / 10)]}`;
       const image = '';
       const price = i * 10;
       this.dishes.push({

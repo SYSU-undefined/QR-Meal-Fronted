@@ -2,21 +2,24 @@
   <div class="root">
     <div class="menu">
       <scroll-view class="tags">
-        <div class="tag" v-for="tag in tags" :key="tag">{{tag}}</div>
+        <div class="tag" :class="{selected: tag === selectedTag}" v-for="(tag, index) in tags" :key="tag" @click="tag_click(index)">{{tag}}</div>
       </scroll-view>
-      <scroll-view class="dishes" scroll-y="true">
-        <div v-for="(dish, index) of dishes" :key="dish.dish_id">
-          <div class="dish_panel">
-            <img class="dish_image" :src="dish.image">
-            <div class="dish_info">
-              <div class="dish_name">{{dish.name}}</div>
-              <div class="dish_price">&yen;&nbsp;{{dish.price}}</div>
-              <div class="button_panel">
-                <div v-if="dish.count > 0">
-                  <i class="dish_btn fa fa-minus-circle" @click="remove_dish(index)"/>
-                  <div class="dish_count">{{dish.count > 99 ? '99+' : dish.count}}</div>
+      <scroll-view class="dishes" scroll-y="true" @scroll="menu_scroll" :scroll-into-view="selectedTagIndexWrap">
+        <div v-for="(tagedDish, tagIndex) of taged_dishes" :key="tagIndex" :id="'tag-' + tagIndex">
+          <div class="menu-tag">{{tags[tagIndex]}}</div>
+          <div v-for="(dish, index) of tagedDish" :key="index">
+            <div class="dish_panel">
+              <img class="dish_image" :src="dish.image">
+              <div class="dish_info">
+                <div class="dish_name">{{dish.name}}</div>
+                <div class="dish_price">&yen;&nbsp;{{dish.price}}</div>
+                <div class="button_panel">
+                  <div v-if="dish.count > 0">
+                    <i class="dish_btn fa fa-minus-circle" @click="remove_dish(tagIndex, index)"/>
+                    <div class="dish_count">{{dish.count > 99 ? '99+' : dish.count}}</div>
+                  </div>
+                  <i class="dish_btn fa fa-plus-circle" @click="add_dish(tagIndex, index)"/>
                 </div>
-                <i class="dish_btn fa fa-plus-circle" @click="add_dish(index)"/>
               </div>
             </div>
           </div>
@@ -85,6 +88,15 @@
   text-align: center;
   height: 80rpx;
   line-height: 80rpx;
+}
+
+.menu-tag {
+  text-align: left;
+  background: #f0f0f0;
+  font-size: 0.8em;
+  height: 50rpx;
+  line-height: 50rpx;
+  padding-left: 10rpx;
 }
 
 .tag.selected {
