@@ -10,13 +10,12 @@ function roundFloat(n) {
 }
 
 function wxPromisify(func) {
-  return async function(param = {}) {
-    return new Promise((res, rej) => {
-      param.success = res;
-      param.fail = rej;
+  return async function promiseWrap(param = {}) {
+    return new Promise((success, fail) => {
+      Object.assign(param, { success, fail });
       func.call(this, param);
     });
-  }
+  };
 }
 
 function patchWx() {
