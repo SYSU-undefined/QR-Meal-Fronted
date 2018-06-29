@@ -33,26 +33,26 @@ const option = {
       }
     },
 
-    async get_dishes() {
+    async getDishes() {
       const { data: dishes, statusCode } = await wx.$reqeust.get(`${BASE_URL}/restaurant/${this.restaurant_id}/menu`);
       if (statusCode !== 200) return;
       this.dishes = dishes;
     },
-    add_dish(tagIndex, index) {
+    addDish(tagIndex, index) {
       this.taged_dishes[tagIndex][index].count += 1;
     },
-    remove_dish(tagIndex, index) {
+    removeDish(tagIndex, index) {
       this.taged_dishes[tagIndex][index].count += 1;
     },
-    menu_scroll(event) {
+    menuScroll(event) {
       const { target } = event;
       const { scrollTop } = target;
-      const topTag = this.offset_to_tag(scrollTop);
+      const topTag = this.offsetToTag(scrollTop);
       if (this.selectedTagIndex !== topTag) {
         this.selectedTagIndex = topTag;
       }
     },
-    offset_to_tag(offset) {
+    offsetToTag(offset) {
       let rest = offset;
       for (const [tagIndex, dishes] of Object.entries(this.taged_dishes)) {
         const length = this.tagHeight + (this.dishHeight * dishes.length);
@@ -63,7 +63,7 @@ const option = {
       }
       return this.tags.length - 1;
     },
-    tag_click(index) {
+    tagClick(index) {
       this.selectedTagIndex = index;
     },
   },

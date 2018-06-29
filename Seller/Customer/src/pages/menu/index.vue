@@ -2,9 +2,9 @@
   <div class="root">
     <div class="menu">
       <scroll-view class="tags">
-        <div class="tag" :class="{selected: tag === selectedTag}" v-for="(tag, index) in tags" :key="tag" @click="tag_click(index)">{{tag}}</div>
+        <div class="tag" :class="{selected: tag === selectedTag}" v-for="(tag, index) in tags" :key="tag" @click="tagClick(index)">{{tag}}</div>
       </scroll-view>
-      <scroll-view class="dishes" scroll-y="true" @scroll="menu_scroll" :scroll-into-view="selectedTagIndexWrap">
+      <scroll-view class="dishes" scroll-y="true" @scroll="menuScroll" :scroll-into-view="selectedTagIndexWrap">
         <div v-for="(tagedDish, tagIndex) of taged_dishes" :key="tagIndex" :id="'tag-' + tagIndex">
           <div class="menu-tag">{{tags[tagIndex]}}</div>
           <div v-for="(dish, index) of tagedDish" :key="index">
@@ -15,10 +15,10 @@
                 <div class="dish_price">&yen;&nbsp;{{dish.price}}</div>
                 <div class="button_panel">
                   <div v-if="dish.count > 0">
-                    <i class="dish_btn fa fa-minus-circle" @click="remove_dish(tagIndex, index)"/>
+                    <i class="dish_btn fa fa-minus-circle" @click="removeDish(tagIndex, index)"/>
                     <div class="dish_count">{{dish.count > 99 ? '99+' : dish.count}}</div>
                   </div>
-                  <i class="dish_btn fa fa-plus-circle" @click="add_dish(tagIndex, index)"/>
+                  <i class="dish_btn fa fa-plus-circle" @click="addDish(tagIndex, index)"/>
                 </div>
               </div>
             </div>
