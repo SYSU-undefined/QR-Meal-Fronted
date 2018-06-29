@@ -19,8 +19,8 @@
       </b-col>
     </b-row>
 
-      <b-btn v-b-modal.modal1>添加员工</b-btn>
-
+      <b-btn v-b-modal.modal1 @click="createStaff()">添加员工</b-btn>
+      <b-btn variant="warning" @click="uploadChange()">确认修改</b-btn>
     </b-container>
 
 
@@ -38,13 +38,13 @@
           <label>员工职位</label>
         </b-col>
         <b-col sm="9">
-          <b-form-input type="text" v-model="newStaff.job"></b-form-input>
+          <b-form-select v-model="newStaff.job" :options="jobOptions" class="mb-3" />
         </b-col>
       </b-row>
     </b-modal>
 
 
-    <b-modal id="modal3" title="更新餐桌" @ok="updateStaff()">
+    <b-modal id="modal3" title="更新员工" @ok="updateStaff()">
       <b-row class="my-1">
         <b-col sm="3">
           <label>员工姓名</label>
@@ -58,7 +58,7 @@
           <label>员工职位</label>
         </b-col>
         <b-col sm="9">
-          <b-form-input type="text" v-model="updateItem.job"></b-form-input>
+          <b-form-select v-model="updateItem.job" :options="jobOptions" class="mb-3" />
         </b-col>
       </b-row>
     </b-modal>
@@ -105,10 +105,16 @@
             label: '操作'
           }
         ],
+        jobOptions: [
+          '前台','后厨'
+        ],
         newStaff: {
           name: null,
           job: null
         },
+        delStaffs: [],
+        updateStaffs: [],
+        newStaffs: [],
         currentPage: 1,
         perPage: 8,
         totalRows: 2,
@@ -119,12 +125,22 @@
         }
       }
     },
-        components: {
+    components: {
       navb,
     },
     methods: {
+      uploadChange() {
+        console.log(this.delStaffs,this.newStaffs,this.updateStaffs)
+      },
       deleteStaff(index) {
-        this.items.splice(index, 1)
+        for (var i of this.newStaffs) {
+          if (i == this.items[index]) {
+            this.items.splice(index, 1);
+            return;
+          }
+        }
+        this.delStaffs.push(this.items[index]);
+        this.items.splice(index, 1);
       },
       createStaff() {
         this.newStaff = {
@@ -134,6 +150,7 @@
       },
       addStaff() {
         this.items.push(this.newStaff);
+        this.newStaffs.push(this.newStaff);
         this.totalRows = this.items.length;
       },
       setUpdate(item, ind) {
@@ -142,8 +159,15 @@
         this.$root.$emit('bv::show::modal','modal3')
       },
       updateStaff() {
-          this.items[this.updateItem.index].name = this.updateItem.name;
-          this.items[this.updateItem.index].job = this.updateItem.job;
+        if (this.items[this.updateItem.index].name != this.updateItem.name || this.items[this.updateItem.index].job != this.updateItem.job) {
+          let flag = true;
+          for (var i of this.newStaffs) {
+            if (i == this.items[this.updateItem.index]) flag = false;
+          }
+          if (flag) this.updateStaffs.push(this.items[this.updateItem.index]);
+        }
+        this.items[this.updateItem.index].name = this.updateItem.name;
+        this.items[this.updateItem.index].job = this.updateItem.job;
       }
     }
   }

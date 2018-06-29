@@ -8,7 +8,7 @@
           <b-button size="sm" @click.stop="setUpdate(row.item)">
             修改
           </b-button>
-          <b-button size="sm" class="mr-1" variant="danger" @click.stop="deleteTable(row.item.tid)">
+          <b-button size="sm" class="mr-1" variant="danger" @click.stop="deleteTable(row.index)">
             删除
           </b-button>
         </template>
@@ -21,7 +21,7 @@
 
       <b-btn v-b-modal.modal1>添加餐桌</b-btn>
       <b-btn v-b-modal.modal2>批量添加餐桌</b-btn>
-
+      <b-btn variant="warning" @click="uploadChange()">提交修改</b-btn>
     </b-container>
 
 
@@ -213,20 +213,35 @@
           tid: null,
           capacity: null,
           type: null
-        }
+        },
+        delTables: [],
+        updateTables: [],
+        newCTables: [],
       }
     },
     components: {
       navb,
     },
     methods: {
-      deleteTable(tid) {
-        for (var i = 0; i < this.items.length; i++) {
-          if (this.items[i].tid == tid) {
-            this.items.splice(i, 1)
-            return;
+      uploadChange() {
+        console.log(this.newCTables,this.delTables,this.updateTables)
+      },
+      deleteTable(ind) {
+        console.log(ind);
+        let flag = true;
+        for (var i = 0; i < this.newCTables.length; i++) {
+          if (this.newCTables[i] == this.items[ind])  {
+            flag = false;
+            this.newCTables.splice(i,1);
+            break;
           }
         }
+
+        if (flag) {
+          this.delTables.push(this.items[ind])
+        }
+        this.items.splice(ind, 1);
+
       },
       
       createTable() {
@@ -246,6 +261,7 @@
       },
       addTable() {
         this.items.push(this.newTable);
+        this.newCTables.push(this.newTable);
         this.totalRows = this.items.length;
       },
       addTables() {
@@ -254,7 +270,8 @@
             tid: this.newTables.start++,
             type: this.newTables.type,
             capacity: this.newTables.capacity
-          })
+          });
+          this.newCTables.push(this.items[this.items.length-1]);
         }
         this.totalRows = this.items.length;
       },
@@ -265,8 +282,19 @@
       updateTable() {
         for (var i of this.items) {
           if (i.tid == this.updateItem.tid) {
-            i.type = this.updateItem.type;
-            i.capacity = this.updateItem.capacity;
+           if ( i.type != this.updateItem.type || i.capacity != this.updateItem.capacity) {
+             let flag = true
+             for (var j of this.newCTables) {
+               if (j == i) {
+                 flag = false;
+                 break;
+               }
+             }
+             if (flag)
+              this.updateTables.push(i)
+           }
+           i.type = this.updateItem.type;
+           i.capacity = this.updateItem.capacity;
             return;
           }
         }
