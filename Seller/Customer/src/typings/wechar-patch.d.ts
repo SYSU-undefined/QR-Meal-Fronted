@@ -17,4 +17,6 @@ declare namespace wx {
     DELETE: string;
     PATCH: string;
   };
+
+  function getUserInfoAsync(options: wx.GetUserInfoOptions): Promise<UserInfoResponse>;
 }
