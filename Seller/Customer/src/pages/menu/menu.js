@@ -1,27 +1,21 @@
+
 import _ from 'lodash';
 
-import dish from '@/components/dish';
-import { Dish } from '@/models/dish';
-import { BASE_URL } from '@/config';
-
+import { BASE_URL } from '../../config';
 /**
  * @type {MpVueOption}
  */
-
 const option = {
   data() {
     return {
       restaurant_id: 0,
-      desk_id: 0,
-      dishes: [],
+      table_id: 0,
       tags: [],
       showChart: false,
-      dish: new Dish(1, '1234', 1234, 1234),
+      dishes: [],
     };
   },
-  components: {
-    dish,
-  },
+
   methods: {
     async submit() {
       /**
@@ -31,20 +25,45 @@ const option = {
       const makeOrder = `${BASE_URL}/restaurant/${this.restaurant_id}/order`;
       const selected = dishes.filter(one => one.count > 0)
         .map(one => _.pick(one, ['dish_id', 'count']));
-      await wx.$reqeust.request(makeOrder, wx.$method.POST, selected);
+      const res = await wx.$reqeust.request(makeOrder, wx.$method.POST, selected);
+      if (res.statusCode === 200) {
+        wx.redirectTo({ url: '/pages/order/main' });
+      }
+    },
+
+    async get_dishes() {
+      const { data: dishes, statusCode } = await wx.$reqeust.get(`${BASE_URL}/restaurant/${this.restaurant_id}/menu`);
+      if (statusCode !== 200) return;
+      this.dishes = dishes;
+    },
+    add_dish(index) {
+      this.dishes[index].count += 1;
+    },
+    remove_dish(index) {
+      this.dishes[index].count += 1;
+    },
+  },
+  computed: {
+    totalPrice() {
+      return this.dishes
+        .filter(one => one.count > 0)
+        .map(one => one.count * one.price)
+        .reduce((lhs, rhs) => lhs + rhs, 0);
     },
   },
   created() {
-    const getDishes = `${BASE_URL}/restaurant/menu`;
-    wx.$reqeust.get(getDishes).then((res) => {
-      /** @type {{data: Dish[]}} */
-      const { data } = res;
-      this.dishes = data.map(one => new Dish(..._.at(one, ['dish_id', 'name', 'image', 'price'])));
-    });
-    for (let i = 0; i < 40; i += 1) {
-      this.dishes.push(new Dish(i, `Dish ${i}`, '', i, `tag ${i / 10}`));
-    }
+    Object.assign(this, _.pick(this.$root.$mp.query, ['restaurant_id', 'table_id']));
     this.tags = ['0', '1', '2', '3'];
+    for (let i = 0; i < 40; i += 1) {
+      const dishId = i;
+      const name = `Dish ${i}`;
+      const tag = this.tags[Math.floor(i / 10)];
+      const image = '';
+      const price = i * 10;
+      this.dishes.push({
+        dish_id: dishId, price, name, tag, image, count: 0,
+      });
+    }
   },
 };
 
