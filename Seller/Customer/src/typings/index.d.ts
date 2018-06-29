@@ -2,6 +2,7 @@ import * as V from "./mpvue/vue";
 import * as Options from "./mpvue/options";
 import * as Plugin from "./mpvue/plugin";
 import * as VNode from "./mpvue/vnode";
+import * as ReqWrap from "../utils/request";
 
 declare namespace mpvue {
   type CreateElement = V.CreateElement;
@@ -34,4 +35,5 @@ declare class Vue extends V.Vue {}
 
 declare global {
   type MpVueOption = mpvue.ComponentOptions<Vue>;
+  type Req = ReqWrap.Request;
 }

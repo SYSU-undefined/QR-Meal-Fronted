@@ -76,7 +76,7 @@ export class Request {
    *
    * @return {Promise<wx.DataResponse>}
    */
-  async _request(url, method, data, header = {}, dataType = 'json') {
+  async request(url, method, data, header = {}, dataType = 'json') {
     const cookieManager = this._cookieManager;
     const { cookie } = cookieManager.cookie;
     Object.assign(header, { cookie });
@@ -113,7 +113,7 @@ export class Request {
    * @returns {Promise<wx.DataResponse>}
    */
   async get(url, query) {
-    const response = await this._request(url, Method.GET, query);
+    const response = await this.request(url, Method.GET, query);
     if (response.statusCode === 401) {
       // handel login
     }

@@ -7,6 +7,7 @@ const option = {
   props: {
     dish: Dish,
     showTotal: Boolean,
+    hideButton: Boolean,
   },
   methods: {
     add_dish() {
@@ -15,6 +16,7 @@ const option = {
       wx.dish = this.dish;
     },
     remove_dish() {
+      if (this.dish.count <= 0) return;
       this.dish.count -= 1;
       this.$emit('remove');
     },

@@ -7,7 +7,7 @@ declare namespace wx {
     statusCode: number;
   }
   
-  var $reqeust: Request;
+  var $reqeust: Req;
   var $method: {
     GET: string;
     POST: string;
