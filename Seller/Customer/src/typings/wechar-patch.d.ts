@@ -18,5 +18,6 @@ declare namespace wx {
     PATCH: string;
   };
 
-  function getUserInfoAsync(options: wx.GetUserInfoOptions): Promise<UserInfoResponse>;
+  function getUserInfoAsync(options: wx.GetUserInfoOptions): Promise<wx.UserInfoResponse>;
+  function loginAsync(options: wx.LoginOptions): Promise<wx.LoginResponse>;
 }

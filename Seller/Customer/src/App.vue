@@ -10,7 +10,7 @@ function roundFloat(n) {
 }
 
 function wxPromisify(func) {
-  return async function(param) {
+  return async function(param = {}) {
     return new Promise((res, rej) => {
       param.success = res;
       param.fail = rej;
@@ -26,6 +26,7 @@ function patchWx() {
   wx.$pxRatio = roundFloat(750 / windowWidth);
 
   wx.getUserInfoAsync = wxPromisify(wx.getUserInfo);
+  wx.loginAsync = wxPromisify(wx.login);
 }
 
 export default {
