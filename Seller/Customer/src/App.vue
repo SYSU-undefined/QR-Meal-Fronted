@@ -26,6 +26,7 @@ function patchWx() {
 
   wx.getUserInfoAsync = wxPromisify(wx.getUserInfo);
   wx.loginAsync = wxPromisify(wx.login);
+  wx.scanCodeAsync = wxPromisify(wx.scanCode);
 }
 
 export default {

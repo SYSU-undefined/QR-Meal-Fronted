@@ -5,19 +5,19 @@
       <div class="name">{{userInfo.nickName}}</div>
     </div>
     <div class="function-area">
-      <div class="button-wrap">
+      <div class="button-wrap" @click="scanCode">
         <div class="icon-wrap qrcode">
           <i class="fa fa-qrcode"/>
         </div>
         <div>扫码点餐</div>
       </div>
-      <div class="button-wrap">
+      <div class="button-wrap" @click="toOrderStatus">
         <div class="icon-wrap order-status">
           <i class="fa fa-utensils"/>
         </div>
         <div>上菜进度</div>
       </div>
-      <div class="button-wrap">
+      <div class="button-wrap" @click="toOrders">
         <div class="icon-wrap order">
           <i class="fa fa-history"/>
         </div>
@@ -96,36 +96,5 @@ i {
 </style>
 
 
-<script>
-export default {
-  data() {
-    return {
-      userInfo: {},
-    };
-  },
-
-  methods: {
-    async getUserInfo() {
-      const { code } = await wx.loginAsync();
-      // TODO: login here
-      console.log(code);
-      ({ userInfo: this.userInfo } = await wx.getUserInfoAsync());
-    },
-    async scanCode() {
-      wx.scanCode();
-    },
-    toOrders() {
-      wx.navigateTo({ url: '/pages/orders/main' });
-    },
-    toOrderStatus() {
-      wx.navigateTo({ url: '/pages/order/main' });
-    },
-  },
-
-  created() {
-    // 调用应用实例的方法获取全局数据
-    this.getUserInfo();
-  },
-};
-
+<script src="./vue.js">
 </script>

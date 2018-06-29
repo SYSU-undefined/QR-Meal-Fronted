@@ -20,4 +20,5 @@ declare namespace wx {
 
   function getUserInfoAsync(options: wx.GetUserInfoOptions): Promise<wx.UserInfoResponse>;
   function loginAsync(options: wx.LoginOptions): Promise<wx.LoginResponse>;
+  function scanCodeAsync(options: wx.ScanCodeOptions): Promise<wx.ScanCodeData>;
 }
