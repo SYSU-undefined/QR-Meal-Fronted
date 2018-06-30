@@ -16,7 +16,7 @@
   </div>
 </template>
 
-<script src="./order.js">
+<script src="./detail.js">
 </script>
 
 
