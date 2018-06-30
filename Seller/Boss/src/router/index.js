@@ -9,6 +9,7 @@ import Login from '@/pages/login/index'
 Vue.use(Router)
 
 export default new Router({
+  mode: 'history',
   routes: [
     {
       path: '/login',
@@ -18,26 +19,27 @@ export default new Router({
     {
       path: '/order',
       name: 'order',
-      component: Order
+      component: Order,meta: { requiresAuth: true }
     },
     {
       path: '/staff',
       name: 'staff',
-      component: Staff
+      component: Staff,meta: { requiresAuth: true }
     },
     {
       path: '/food',
       name: 'food',
-      component: Food
+      component: Food,meta: { requiresAuth: true }
     },
     {
       path: '/table',
       name: 'table',
-      component: Table
+      component: Table,
+      meta: { requiresAuth: true }
     },
     {
       path: '*',
-      redirect: '/food',
+      redirect: '/login',
     }
   ]
 })

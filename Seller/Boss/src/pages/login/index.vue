@@ -17,7 +17,7 @@
         <b-button class="custom-btn" variant="primary" @click="()=>onSubmit()">登录</b-button>
         </b-row>
         <b-row  class="form-row">
-        <b-button class="custom-btn" variant="warning">成为进驻商家</b-button>
+        <b-button class="custom-btn" variant="warning" @click="showInfo()">成为进驻商家</b-button>
         </b-row>
       </b-container>
   </div>
@@ -61,9 +61,18 @@ export default {
   },
   methods : {
     onSubmit () {
-        console.log(this.form,"hhh")
-        this.$router.push({path:'/food'});
+        this.axios.post('/api/auth', this.form).then((res)=>{
+            if (res.status == 200) {
+                this.$router.push({path:'/food'});
+                this.$cookie.set('loginSuccess', true);
+            } else {
+                alert("Wrong Password/Username");
+            }
+        })
     },
+    showInfo() {
+        alert('请联系: xxxxxxxx or mailto: xxxx@xx.com');
+    }
   }
 }
 </script>

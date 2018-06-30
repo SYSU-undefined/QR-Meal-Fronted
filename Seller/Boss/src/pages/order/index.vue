@@ -83,7 +83,11 @@
       date: new Date().Format("yyyy-MM-dd hh:mm:ss")
     },
   ]
-
+const orderDetail = {
+  totalPrice: 32,
+  created_at: new Date().Format("yyyy-MM-dd hh:mm:ss"),
+  desk: 6
+}
   export default {
     data() {
       return {

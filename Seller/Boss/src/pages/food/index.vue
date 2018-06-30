@@ -34,7 +34,7 @@
             <div class="food-detail">
               <b-form-input :value="f.name" @change="(e)=>oldFoodPropertyChange(e,'name',f)" placeholder="输入食物名字" />
               <b-input-group size="sm" prepend="￥">
-                <b-form-input :value="f.price" @change="(e)=>oldFoodPropertyChange(e,'price',f)" placeholder="输入食物价格"></b-form-input>
+                <b-form-input :value="f.price" @change="(e)=>oldFoodPropertyChange(e,'price',f)" type="number" placeholder="输入食物价格"></b-form-input>
               </b-input-group>
             </div>
             <p class="food-des">
