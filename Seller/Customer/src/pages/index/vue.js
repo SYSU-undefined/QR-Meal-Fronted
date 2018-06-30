@@ -20,12 +20,13 @@ const option = {
       if (path) {
         wx.navigateTo({ url: path });
       }
+      wx.navigateTo({ url: '/pages/menu/main' });
     },
     toOrders() {
       wx.navigateTo({ url: '/pages/orders/main' });
     },
     toOrderStatus() {
-      wx.navigateTo({ url: '/pages/order/main' });
+      wx.navigateTo({ url: '/pages/orders/detail/main' });
     },
   },
 
