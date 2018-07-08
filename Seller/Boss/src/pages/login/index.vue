@@ -63,8 +63,11 @@ export default {
     onSubmit () {
         this.axios.post('/api/auth', this.form).then((res)=>{
             if (res.status == 200) {
+                console.log(res);
                 this.$router.push({path:'/food'});
-                this.$cookie.set('loginSuccess', true);
+                this.$cookies.set('loginSuccess', true);
+                this.$cookies.set('rid', res.data.data.restaurant_id)
+                console.log(res.data.data.restaurant_id);
             } else {
                 alert("Wrong Password/Username");
             }

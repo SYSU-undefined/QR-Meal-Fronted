@@ -28,7 +28,7 @@
 <style scoped>
   #finished {
     display: none;
-  }
+  } 
 
   .title {
     width: 100%;

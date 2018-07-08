@@ -19,9 +19,9 @@
         <i class="fa fa-wrench"></i>
         <span class="tabbar-item-title">餐桌列表</span>
       </div>
-      <div @click="switchTo('/pages/waiter/call/main')" class="tabbar-item">
+      <div @click="switchTo('/pages/waiter/foodmenu/main')" class="tabbar-item">
         <i class="fa fa-check-square"></i>
-        <span class="tabbar-item-title">叫号</span>
+        <span class="tabbar-item-title">菜品告罄</span>
       </div>
     </div>
   </div>

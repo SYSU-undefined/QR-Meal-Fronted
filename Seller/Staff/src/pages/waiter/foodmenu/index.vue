@@ -1,21 +1,11 @@
 <template>
 <div>
   <div class="container">
-    <h3 class="title">菜单</h3>
-    <ul id="unfinish" class="food-item-list">
-      <li>
-        <div class="food-item" v-for="(f,i) in foodList" :key="i">
-          <h5 class="food-item-table">{{f.table}}桌</h5>
-          <p class="food-item-name">{{f.name}}</p>
-          <p class="food-item-note">{{f.note}}</p>
-          <p class="food-item-note">{{f.backState == 0? '未制作':'制作中'}}</p>
-          <button class="food-item-btn" @click="changeFoodState(f)">{{f.state == 0 ? '未上菜': '已上菜'}}</button>
-          <button class="food-item-btn" v-if="f.state == 0" style="background-color:red;" @click="delFood(f,i)">取消此菜</button>
-        </div>
-      </li>
-    </ul>
+      <div class="form-input">
+          <input type="text"/>
+      </div>
   </div>
-  </div>
+</div>
 </template>
 <style scoped>
 #finished {

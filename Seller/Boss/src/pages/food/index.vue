@@ -22,15 +22,16 @@
         <b-button class="add-btn" @click="addNewType()">添加新分类</b-button>
         <b-button class="add-btn" v-if="this.types.length > 0" @click="addNewFood()">添加新餐品</b-button><br />
         <b-button class="add-btn" variant="warning" @click="uploadChange()">上传修改</b-button>
+
       </div>
       <div class="main-content">
         <div class="food-item-group">
           <div class="food-item" v-for="(f,ind) in selectedFoods" :key="'2'+ind">
             <span class="food-del" @click="delOldFood(ind)">X</span>
-            <div class="img-upload" @click="uploadOldImg(f)" v-if="!f.image">
+            <div class="img-upload" @click="uploadOldImg(f)" v-if="!f.dish_id">
               <span>上传食物图片</span>
             </div>
-            <img @click="uploadOldImg(f)" v-if="f.image" class="food-img" alt="食物图片" :src="f.url" />
+            <img @click="uploadOldImg(f)" v-if="f.dish_id" class="food-img" alt="食物图片" :src="f.url? f.url :`https://filer.resetbypear.com/dish_img/${f.dish_id}.jpg`" />
             <div class="food-detail">
               <b-form-input :value="f.name" @change="(e)=>oldFoodPropertyChange(e,'name',f)" placeholder="输入食物名字" />
               <b-input-group size="sm" prepend="￥">
@@ -65,6 +66,9 @@
     </b-modal>
     <b-modal id='upload2' @ok="setNewImg()">
       <b-form-file v-model="cloneImg" accept=".jpg" :state="Boolean(cloneImg)" placeholder="选择食物图片" autocomplete="off"></b-form-file>
+    </b-modal>
+    <b-modal id="shouupload" v-model="upFlag">
+      <b-progress :max="1" :value="1" animated></b-progress>
     </b-modal>
   </div>
 </template>
@@ -115,8 +119,8 @@
   export default {
     data() {
       return {
-        types: foodtypes,
-        foods: fooditems,
+        types: [],
+        foods: {},
         updateFoods: {},
         deleteFoods: {},
         newFoods: {},
@@ -124,30 +128,47 @@
         selectedType: null,
         selectedFood: {},
         cloneImg: null,
-        typeCnt: 0
+        typeCnt: 0,
+        upFlag: false,
+        typeid: []
       }
     },
 
-    mounted() {
-      this.requestFood();
-      this.activeItem(0);
+    created() {
+      this.requestFood().then(()=>this.activeItem(0));
+      this.requestType();
+      
     },
     components: {
       draggable,
       navb
     },
     methods: {
-      typeNameChange(i) {
+      async requestType() {
+        let rid = this.$cookies.get('rid');
+        await this.axios.get(`/api/category`).then((res)=>{
+          this.typeid = res.data.data;
+          console.log(this.typeid);
+        });
+      },
+      async typeNameChange(i) {
+        await this.requestType();
         console.log(this.types[i].name, this.selectedType, this.foods);
         this.$set(this.foods, this.types[i].name, []);
+        for (let t of this.typeid) {
+          if (t.name == this.selectedType) {
+            await this.axios.put(`/api/category/${t.category_id}`,{name: this.types[i].name, description: this.types[i].name});
+            break;
+          }
+        }
         for (var it of this.foods[this.selectedType]) {
           this.foods[this.types[i].name].push(it);
           console.log(it)
         }
         this.$set(this.newFoods, this.types[i].name, this.newFoods[this.selectedType]);
         console.log(this.foods);
-        this.foods[this.selectedType] = null;
-        this.newFoods[this.selectedType] = null;
+        delete this.foods[this.selectedType];
+        delete this.newFoods[this.selectedType];
         this.selectedType = this.types[i].name;
         this.selectedFoods = this.foods[this.types[i].name];
         // console.log(i, this.selectedFoods, this.foods[this.selectedType])
@@ -174,20 +195,98 @@
         if (this.types.length == 1) this.activeItem(0);
       },
       addNewFood() {
-        if (!this.newFoods[this.selectedType]) this.$set(this.newFoods, this.selectedType, [])
+        if (!this.newFoods[this.selectedType]) {
+          this.$set(this.newFoods, this.selectedType, []);
+          this.axios.post("/api/category",{name: this.selectedType, description: this.selectedType}).then(()=>console.log("create New Type!"));
+        }
         this.newFoods[this.selectedType].push({
           name: '',
           price: 0,
           description: '',
           image: null,
-          url: ''
+          url: '',
         })
       },
-      requestFood(typename) {
-
+      async requestFood() {
+        let rid = this.$cookies.get('rid');
+        await this.axios.get(`/api/restaurant/${rid}/dish`).then((res)=>{
+          console.log(res.data.data); 
+          this.foods = res.data.data;
+          for (var i in this.foods) {
+            this.types.push({
+              name: i,
+              isActive: false,
+              edit: false
+            })
+          }
+        })
       },
-      uploadChange() {
+      async uploadChange() {
+        if (this.upFlag) return;
+        await this.requestType();
+        this.upFlag = true;
+        let rid = this.$cookies.get('rid');
         console.log(this.updateFoods, this.newFoods,this.deleteFoods);
+                console.log("deleting...")
+        for (let k in this.updateFoods) {
+          let cid = null;
+          for (let t of this.typeid) {
+            if (t.name == k) {
+              cid = t.category_id;
+              console.log(cid);
+              break;
+            }
+          }
+          for (let f of this.updateFoods[k]) {
+            let fd = new FormData();
+            fd.append('name', f.name);
+            fd.append('description',f.description);
+            fd.append('price', f.price);
+            fd.append('category_id', cid);
+            console.log(f)
+            fd.append('image', f.image);
+            this.axios.put(`api/restaurant/${rid}/dish/${f.dish_id}`,fd).then(()=>console.log('upload'));
+          }
+        }
+                console.log("deleting...")
+        for (let k in this.newFoods) {
+          let cid = null;
+          for (let t of this.typeid) {
+            if (t.name == k) {
+              cid = t.category_id;
+              console.log(cid);
+              break;
+            }
+          }
+          for (let f of this.newFoods[k]) {
+            let fd = new FormData();
+            fd.append('name', f.name);
+            fd.append('description',f.description);
+            fd.append('price', f.price);
+            fd.append('category_id', cid);
+            console.log(f)
+            fd.append('image', f.image);
+            this.axios.post(`api/restaurant/${rid}/dish`,fd).then(()=>console.log('create'));
+          }
+        }
+        console.log("deleting...")
+        for (let k in this.deleteFoods) {
+          for (let f of this.deleteFoods[k]) {
+            this.axios.delete(`api/restaurant/${rid}/dish/${f.dish_id}`).then(()=>console.log('delete'));
+          }
+          if (this.foods[k] == undefined || this.foods[k].length == 0) {
+            let cid = null;
+            for (let t of this.typeid) {
+              if (t.name == k) {
+                cid = t.category_id;
+                console.log(cid);
+                break;
+              }
+            }
+            this.axios.delete(`api/category/${cid}`).then(()=>console.log('remove type'));
+          }
+        }
+        this.upFlag = false;
       },
       uploadOldImg(f) {
         this.selectedFood = f;
@@ -234,25 +333,30 @@
           }
         }
         this.foods[this.selectedType].splice(ind, 1);
-        
+
         console.log(this.deleteFoods, this.updateFoods);
       },
       delNewFood(ind) {
         this.newFoods[this.selectedType].splice(ind, 1);
+
       },
       delType(t, ind) {
+        let dt = this.types[ind].name;
         this.types.splice(ind, 1);
-        console.log(this.selectedType in this.foods)
-        if (!(this.selectedType in this.foods)) {
+        if (!(dt in this.foods)) {
           this.activeItem(0);
           return;
         }
-        if (!this.deleteFoods[this.selectedType]) {
-          this.$set(this.deleteFoods, this.selectedType, []);
+        if (!this.deleteFoods[dt]) {
+          this.$set(this.deleteFoods, dt, []);
         }
-        this.updateFoods[this.selectedType] = null;
-        this.deleteFoods[this.selectedType] = this.foods[this.selectedType];
-        this.activeItem(0);
+        if (this.updateFoods[dt])
+          delete this.updateFoods[dt];
+        this.deleteFoods[dt] = this.foods[dt];
+        // this.foods[dt] = null;
+        delete this.foods[dt];
+        if (dt == this.selectedType)
+          this.activeItem(0);
         console.log(this.deleteFoods, this.updateFoods);
       },
       oldFoodPropertyChange(val, p, f) {
