@@ -8,7 +8,7 @@ import { BASE_URL } from '../../config';
 const option = {
   data() {
     return {
-      restaurant_id: 0,
+      restaurant_id: 1,
       table_id: 0,
       tags: [],
       showChart: false,
@@ -35,10 +35,17 @@ const option = {
     },
 
     async getDishes() {
-      const { data: dishes, statusCode } = await wx.$reqeust.get(`${BASE_URL}/restaurant/${this.restaurant_id}/menu`);
+      const { data: dishes, statusCode } = await wx.$reqeust.get(`${BASE_URL}/restaurant/${this.restaurant_id}/dish`);
       if (statusCode !== 200) return;
-      this.dishes = dishes;
-      this.tags = Object.keys(dishes);
+      this.dishes = dishes.data;
+      for (let k in this.dishes) {
+        for (let d of this.dishes[k]) {
+          d.image = `https://filer.resetbypear.com/dish_img/${d.dish_id}.jpg`
+        }
+      }
+
+      console.log(dishes)
+      this.tags = Object.keys(dishes.data);
     },
     addDish(tag, index) {
       const dish = this.dishes[tag][index];
@@ -98,132 +105,132 @@ const option = {
   onLoad() {
     Object.assign(this, _.pick(this.$root.$mp.query, ['restaurant_id', 'table_id']));
     this.getDishes();
-    this.dishes = {
-      粥类: [
-        {
-          dish_id: 1,
-          name: '茅根马蹄粥',
-          description: '偏甜口味，清热解暑',
-          price: 8,
-          category_name: '粥类',
-          category_description: '粥粥粥粥',
-        },
-        {
-          dish_id: 2,
-          name: '皮蛋瘦肉粥',
-          description: '经典粥类',
-          price: 9,
-          category_name: '粥类',
-          category_description: '粥粥粥粥',
-        },
-        {
-          dish_id: 1,
-          name: '茅根马蹄粥',
-          description: '偏甜口味，清热解暑',
-          price: 8,
-          category_name: '粥类',
-          category_description: '粥粥粥粥',
-        },
-        {
-          dish_id: 2,
-          name: '皮蛋瘦肉粥',
-          description: '经典粥类',
-          price: 9,
-          category_name: '粥类',
-          category_description: '粥粥粥粥',
-        },
-        {
-          dish_id: 1,
-          name: '茅根马蹄粥',
-          description: '偏甜口味，清热解暑',
-          price: 8,
-          category_name: '粥类',
-          category_description: '粥粥粥粥',
-        },
-        {
-          dish_id: 2,
-          name: '皮蛋瘦肉粥',
-          description: '经典粥类',
-          price: 9,
-          category_name: '粥类',
-          category_description: '粥粥粥粥',
-        },
-        {
-          dish_id: 1,
-          name: '茅根马蹄粥',
-          description: '偏甜口味，清热解暑',
-          price: 8,
-          category_name: '粥类',
-          category_description: '粥粥粥粥',
-        },
-        {
-          dish_id: 2,
-          name: '皮蛋瘦肉粥',
-          description: '经典粥类',
-          price: 9,
-          category_name: '粥类',
-          category_description: '粥粥粥粥',
-        },
-      ],
-      粉类: [
-        {
-          dish_id: 3,
-          name: '三丝炒粉',
-          description: '青椒、红萝卜、火腿',
-          price: 10,
-          category_name: '粉类',
-          category_description: '粉粉粉粉',
-        },
-        {
-          dish_id: 3,
-          name: '三丝炒粉',
-          description: '青椒、红萝卜、火腿',
-          price: 10,
-          category_name: '粉类',
-          category_description: '粉粉粉粉',
-        },
-        {
-          dish_id: 3,
-          name: '三丝炒粉',
-          description: '青椒、红萝卜、火腿',
-          price: 10,
-          category_name: '粉类',
-          category_description: '粉粉粉粉',
-        },
-        {
-          dish_id: 3,
-          name: '三丝炒粉',
-          description: '青椒、红萝卜、火腿',
-          price: 10,
-          category_name: '粉类',
-          category_description: '粉粉粉粉',
-        },
-        {
-          dish_id: 3,
-          name: '三丝炒粉',
-          description: '青椒、红萝卜、火腿',
-          price: 10,
-          category_name: '粉类',
-          category_description: '粉粉粉粉',
-        },
-        {
-          dish_id: 3,
-          name: '三丝炒粉',
-          description: '青椒、红萝卜、火腿',
-          price: 10,
-          category_name: '粉类',
-          category_description: '粉粉粉粉',
-        },
-        {
-          dish_id: 3,
-          name: '三丝炒粉',
-          description: '青椒、红萝卜、火腿',
-          price: 10,
-          category_name: '粉类',
-          category_description: '粉粉粉粉',
-        },
-      ],
-    };
+    // this.dishes = {
+    //   粥类: [
+    //     {
+    //       dish_id: 1,
+    //       name: '茅根马蹄粥',
+    //       description: '偏甜口味，清热解暑',
+    //       price: 8,
+    //       category_name: '粥类',
+    //       category_description: '粥粥粥粥',
+    //     },
+    //     {
+    //       dish_id: 2,
+    //       name: '皮蛋瘦肉粥',
+    //       description: '经典粥类',
+    //       price: 9,
+    //       category_name: '粥类',
+    //       category_description: '粥粥粥粥',
+    //     },
+    //     {
+    //       dish_id: 1,
+    //       name: '茅根马蹄粥',
+    //       description: '偏甜口味，清热解暑',
+    //       price: 8,
+    //       category_name: '粥类',
+    //       category_description: '粥粥粥粥',
+    //     },
+    //     {
+    //       dish_id: 2,
+    //       name: '皮蛋瘦肉粥',
+    //       description: '经典粥类',
+    //       price: 9,
+    //       category_name: '粥类',
+    //       category_description: '粥粥粥粥',
+    //     },
+    //     {
+    //       dish_id: 1,
+    //       name: '茅根马蹄粥',
+    //       description: '偏甜口味，清热解暑',
+    //       price: 8,
+    //       category_name: '粥类',
+    //       category_description: '粥粥粥粥',
+    //     },
+    //     {
+    //       dish_id: 2,
+    //       name: '皮蛋瘦肉粥',
+    //       description: '经典粥类',
+    //       price: 9,
+    //       category_name: '粥类',
+    //       category_description: '粥粥粥粥',
+    //     },
+    //     {
+    //       dish_id: 1,
+    //       name: '茅根马蹄粥',
+    //       description: '偏甜口味，清热解暑',
+    //       price: 8,
+    //       category_name: '粥类',
+    //       category_description: '粥粥粥粥',
+    //     },
+    //     {
+    //       dish_id: 2,
+    //       name: '皮蛋瘦肉粥',
+    //       description: '经典粥类',
+    //       price: 9,
+    //       category_name: '粥类',
+    //       category_description: '粥粥粥粥',
+    //     },
+    //   ],
+    //   粉类: [
+    //     {
+    //       dish_id: 3,
+    //       name: '三丝炒粉',
+    //       description: '青椒、红萝卜、火腿',
+    //       price: 10,
+    //       category_name: '粉类',
+    //       category_description: '粉粉粉粉',
+    //     },
+    //     {
+    //       dish_id: 3,
+    //       name: '三丝炒粉',
+    //       description: '青椒、红萝卜、火腿',
+    //       price: 10,
+    //       category_name: '粉类',
+    //       category_description: '粉粉粉粉',
+    //     },
+    //     {
+    //       dish_id: 3,
+    //       name: '三丝炒粉',
+    //       description: '青椒、红萝卜、火腿',
+    //       price: 10,
+    //       category_name: '粉类',
+    //       category_description: '粉粉粉粉',
+    //     },
+    //     {
+    //       dish_id: 3,
+    //       name: '三丝炒粉',
+    //       description: '青椒、红萝卜、火腿',
+    //       price: 10,
+    //       category_name: '粉类',
+    //       category_description: '粉粉粉粉',
+    //     },
+    //     {
+    //       dish_id: 3,
+    //       name: '三丝炒粉',
+    //       description: '青椒、红萝卜、火腿',
+    //       price: 10,
+    //       category_name: '粉类',
+    //       category_description: '粉粉粉粉',
+    //     },
+    //     {
+    //       dish_id: 3,
+    //       name: '三丝炒粉',
+    //       description: '青椒、红萝卜、火腿',
+    //       price: 10,
+    //       category_name: '粉类',
+    //       category_description: '粉粉粉粉',
+    //     },
+    //     {
+    //       dish_id: 3,
+    //       name: '三丝炒粉',
+    //       description: '青椒、红萝卜、火腿',
+    //       price: 10,
+    //       category_name: '粉类',
+    //       category_description: '粉粉粉粉',
+    //     },
+    //   ],
+    // };
     this.tags = Object.keys(this.dishes);
   },
 };

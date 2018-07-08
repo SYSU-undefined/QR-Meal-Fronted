@@ -16,10 +16,10 @@ const option = {
       ({ userInfo: this.userInfo } = await wx.getUserInfoAsync());
     },
     async scanCode() {
-      const { path } = await wx.scanCodeAsync();
-      if (path) {
-        wx.navigateTo({ url: path });
-      }
+      // const { path } = await wx.scanCodeAsync();
+      // if (path) {
+      //   wx.navigateTo({ url: path });
+      // }
       wx.navigateTo({ url: '/pages/menu/main' });
     },
     toOrders() {
