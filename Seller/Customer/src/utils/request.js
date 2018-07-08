@@ -113,6 +113,7 @@ export class Request {
    * @returns {Promise<wx.DataResponse>}
    */
   async get(url, query) {
+    console.log(url);
     const response = await this.request(url, Method.GET, query);
     if (response.statusCode === 401) {
       // handel login

@@ -5,7 +5,7 @@
       <b-table striped hover :items="items" :fields="fields" :current-page="currentPage" :per-page="perPage">
         <template slot="actions" slot-scope="row">
           <!-- We use @click.stop here to prevent a 'row-clicked' event from also happening -->
-          <b-button size="sm" @click.stop="getOrder(row.item.id)">
+          <b-button size="sm" @click.stop="getDetail(row.item.order_id)">
             查看详情
           </b-button>
 
@@ -23,7 +23,11 @@
 
 
     <b-modal id="modal1" title="订单详情">
-
+      <b-list-group>
+        <b-list-group-item v-for="it in detailItem.order_items" :key="it.item_id">
+          <h5>it.name</h5>
+        </b-list-group-item>
+      </b-list-group>
     </b-modal>
 
 
@@ -91,19 +95,19 @@ const orderDetail = {
   export default {
     data() {
       return {
-        items: null,
+        items: [],
         fields: [{
-            key: 'total',
+            key: 'total_price',
             label: '总价',
             sortable: true,
           },
           {
-            key: 'table',
+            key: 'desk_id',
             label: '餐桌号',
             sortable: true
           },
           {
-            key: 'date',
+            key: 'created_at',
             label: '用餐日期'
           },
           {
@@ -114,18 +118,32 @@ const orderDetail = {
         currentPage: 1,
         perPage: 8,
         totalRows: null,
-        detailItem: null
+        detailItem: []
       }
     },
     created() {
-      this.items = items;
-      this.totalRows = items.length;
+      let rid = this.$cookies.get('rid');
+      this.axios.get(`api/restaurant/${rid}/order`).then(res=>{
+        this.items = res.data.data;
+
+        this.totalRows = this.items.length;
+        for (let i of this.items) {
+          i.created_at = new Date(i.created_at).Format("yyyy-MM-dd hh:mm:ss")
+        }
+        console.log(res);
+      })
     },
     components: {
       navb,
     },
     methods: {
-
+      getDetail(oid) {
+        let rid = this.$cookies.get('rid');
+        this.axios.get(`api/restaurant/${rid}/order/${oid}/meal`).then(res=>{
+          console.log(res);
+          this.$root.$emit('bv::show::modal','modal1')
+        });
+        }
     }
   }
 
