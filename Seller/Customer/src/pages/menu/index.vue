@@ -14,9 +14,9 @@
                 <div class="dish_name">{{dish.name}}</div>
                 <div class="dish_price">&yen;&nbsp;{{dish.price}}</div>
                 <div class="button_panel">
-                  <div v-if="dish.count > 0">
+                  <div v-if="dish.quantity > 0">
                     <i class="dish_btn fa fa-minus-circle" @click="removeDish(tag, index)"/>
-                    <div class="dish_count">{{dish.count > 99 ? '99+' : dish.count}}</div>
+                    <div class="dish_count">{{dish.quantity > 99 ? '99+' : dish.quantity}}</div>
                   </div>
                   <i class="dish_btn fa fa-plus-circle" @click="addDish(tag, index)"/>
                 </div>

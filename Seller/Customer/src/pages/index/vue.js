@@ -14,6 +14,8 @@ const option = {
       // TODO: login here
       console.log(code);
       ({ userInfo: this.userInfo } = await wx.getUserInfoAsync());
+      let temp = await wx.getUserInfoAsync();
+      console.log(temp)
     },
     async scanCode() {
       // const { path } = await wx.scanCodeAsync();

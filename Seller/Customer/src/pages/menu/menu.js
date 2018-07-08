@@ -26,11 +26,17 @@ const option = {
       const { dishes } = this;
       const makeOrder = `${BASE_URL}/restaurant/${this.restaurant_id}/order`;
       const flatDishes = Object.values(dishes).reduce((prev, cur) => prev.concat(cur), []);
-      const selected = flatDishes.filter(one => one.count > 0).map(one => _.pick(one, ['dish_id', 'count']));
+      console.log(flatDishes);
+      const selected = flatDishes.filter(one => one.quantity > 0).map(one => _.pick(one, ['dish_id', 'quantity']));
       console.log(selected);
-      const res = await wx.$reqeust.request(makeOrder, wx.$method.POST, selected);
+      const res = await wx.$reqeust.request(makeOrder, wx.$method.POST, {desk_id:1});
+      console.log(res);
+      const oid = res.data.data.order_id;
+      for (let f of selected) {
+        await wx.$reqeust.request(`${BASE_URL}/restaurant/${this.restaurant_id}/order/${oid}/meal`, wx.$method.POST, f)
+      }
       if (res.statusCode === 200) {
-        wx.redirectTo({ url: '/pages/order/main' });
+        wx.redirectTo({ url: '/pages/orders/main' });
       }
     },
 
@@ -49,13 +55,13 @@ const option = {
     },
     addDish(tag, index) {
       const dish = this.dishes[tag][index];
-      if (dish.count === undefined) dish.count = 0;
-      dish.count += 1;
+      if (dish.quantity === undefined) dish.quantity = 0;
+      dish.quantity += 1;
       this.totalPrice += dish.price;
     },
     removeDish(tag, index) {
       const dish = this.dishes[tag][index];
-      dish.count -= 1;
+      dish.quantity -= 1;
       this.totalPrice -= dish.price;
     },
     menuScroll(event) {
